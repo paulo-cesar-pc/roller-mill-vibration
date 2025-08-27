@@ -28,6 +28,22 @@ data:
   testing:
     enabled: true
     max_rows: 10000
+  
+  # Noisy data processing
+  noise_reduction:
+    enabled: true
+    target_frequency: '5min'  # Aggregation frequency
+    aggressive_filtering: false
+    outlier_method: 'iqr'  # 'iqr', 'hampel', 'zscore'
+  
+  # Alternative approaches
+  alternative_formulations:
+    enabled: true
+    vibration_thresholds: [4.5, 6.5, 8.5]  # Low, Normal, High, Critical
+    operational_thresholds:
+      warning: 6.5
+      alarm: 8.0
+      emergency: 9.5
 
 # Feature Engineering
 features:

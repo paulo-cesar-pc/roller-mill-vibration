@@ -17,6 +17,23 @@ class TestingConfig:
 
 
 @dataclass
+class NoiseReductionConfig:
+    """Noise reduction configuration settings."""
+    enabled: bool
+    target_frequency: str
+    aggressive_filtering: bool
+    outlier_method: str
+
+
+@dataclass
+class AlternativeFormulationsConfig:
+    """Alternative formulations configuration settings."""
+    enabled: bool
+    vibration_thresholds: List[float]
+    operational_thresholds: Dict[str, float]
+
+
+@dataclass
 class DataConfig:
     """Data configuration settings."""
     raw_data_path: str
@@ -29,6 +46,8 @@ class DataConfig:
     validation_split: float
     test_split: float
     testing: TestingConfig
+    noise_reduction: NoiseReductionConfig
+    alternative_formulations: AlternativeFormulationsConfig
 
 
 @dataclass
@@ -145,11 +164,36 @@ class ConfigManager:
             # Create configuration objects
             project_config = ProjectConfig(**config_dict['project'])
             
-            # Handle nested testing config within data config
+            # Handle nested configs within data config
             data_dict = config_dict['data'].copy()
+            
+            # Testing config
             testing_dict = data_dict.pop('testing', {'enabled': False, 'max_rows': 10000})
             testing_config = TestingConfig(**testing_dict)
-            data_config = DataConfig(**data_dict, testing=testing_config)
+            
+            # Noise reduction config
+            noise_dict = data_dict.pop('noise_reduction', {
+                'enabled': True, 
+                'target_frequency': '5min',
+                'aggressive_filtering': False,
+                'outlier_method': 'iqr'
+            })
+            noise_config = NoiseReductionConfig(**noise_dict)
+            
+            # Alternative formulations config
+            alt_dict = data_dict.pop('alternative_formulations', {
+                'enabled': True,
+                'vibration_thresholds': [4.5, 6.5, 8.5],
+                'operational_thresholds': {'warning': 6.5, 'alarm': 8.0, 'emergency': 9.5}
+            })
+            alt_config = AlternativeFormulationsConfig(**alt_dict)
+            
+            data_config = DataConfig(
+                **data_dict, 
+                testing=testing_config,
+                noise_reduction=noise_config,
+                alternative_formulations=alt_config
+            )
             features_config = FeatureConfig(**config_dict['features'])
             models_config = ModelConfig(**config_dict['models'])
             training_config = TrainingConfig(**config_dict['training'])

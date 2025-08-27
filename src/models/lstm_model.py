@@ -353,6 +353,8 @@ class LSTMModel(DeepLearningModel):
             return
         
         try:
+            import matplotlib
+            matplotlib.use('Agg')  # Use non-interactive backend
             import matplotlib.pyplot as plt
             
             history_dict = self.history.history
@@ -380,7 +382,7 @@ class LSTMModel(DeepLearningModel):
             plt.legend()
             
             plt.tight_layout()
-            plt.show()
+            plt.close()  # Close instead of show
             
         except ImportError:
             self.logger.warning("Matplotlib not available for plotting")

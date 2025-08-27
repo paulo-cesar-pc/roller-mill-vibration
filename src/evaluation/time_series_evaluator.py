@@ -4,6 +4,8 @@ Comprehensive time series evaluation framework with advanced metrics and visuali
 
 import pandas as pd
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend
 import matplotlib.pyplot as plt
 import seaborn as sns
 from typing import Dict, List, Tuple, Optional, Any, Union

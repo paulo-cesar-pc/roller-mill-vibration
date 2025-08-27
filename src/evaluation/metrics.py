@@ -7,6 +7,8 @@ import pandas as pd
 import logging
 from typing import Dict, List, Any, Optional, Tuple, Union
 from pathlib import Path
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import (
@@ -481,7 +483,7 @@ Sample Size: {len(y_true_clean):,}
             plt.savefig(plot_file, dpi=300, bbox_inches='tight')
             self.logger.info(f"Evaluation plots saved to {plot_file}")
         
-        plt.show()
+        plt.close()  # Close instead of show to prevent display issues
     
     def compare_models(
         self,
