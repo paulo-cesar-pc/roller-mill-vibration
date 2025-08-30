@@ -36,7 +36,7 @@ class IntegratedNoisyConfig:
     create_mill_features: bool = True
     create_multi_scale_features: bool = True
     feature_selection_method: str = 'importance'  # 'importance', 'correlation', 'none'
-    max_features: Optional[int] = 200  # Limit number of features
+    max_features: Optional[int] = 100  # Reduce to speed up training
     
     # Model training
     focus_on_robustness: bool = True
@@ -100,13 +100,13 @@ class IntegratedNoisyTrainer:
         )
         self.noise_reducer = IndustrialNoiseReducer(noise_config)
         
-        # Feature engineering
+        # Feature engineering - simplified to avoid computational issues
         if self.config.create_mill_features:
             mill_config = MillFeatureConfig(
                 create_efficiency_features=True,
                 create_stability_features=True,
-                create_interaction_features=self.config.create_multi_scale_features,
-                create_change_features=self.config.create_multi_scale_features
+                create_interaction_features=False,  # Disable to reduce complexity
+                create_change_features=False        # Disable to reduce complexity
             )
             self.feature_engineer = MillFeatureEngineer(mill_config)
         
@@ -145,18 +145,13 @@ class IntegratedNoisyTrainer:
         self.logger.info("Applying noise reduction and temporal aggregation")
         df_processed = self.noise_reducer.fit_transform(df, target_col, feature_cols)
         
-        # Extract target columns (multiple aggregation statistics)
-        target_cols = [col for col in df_processed.columns if col.startswith(target_col)]
-        self.logger.info(f"Target columns after aggregation: {target_cols}")
-        
-        # Use primary target (mean aggregation)
-        primary_target_col = f"{target_col}_mean"
-        if primary_target_col not in df_processed.columns:
-            # Fallback to first available target column
-            primary_target_col = target_cols[0] if target_cols else target_col
-            
-        y_processed = df_processed[primary_target_col].copy()
-        X_processed = df_processed.drop(columns=target_cols)
+        # Extract target column (now only contains the aggregated target, no derivatives)
+        if target_col in df_processed.columns:
+            y_processed = df_processed[target_col].copy()
+            X_processed = df_processed.drop(columns=[target_col])
+            self.logger.info(f"Using target column: {target_col}")
+        else:
+            raise ValueError(f"Target column {target_col} not found after noise reduction")
         
         self.logger.info(f"After noise reduction: {X_processed.shape[1]} features, {len(y_processed)} samples")
         
@@ -164,13 +159,13 @@ class IntegratedNoisyTrainer:
         if self.feature_engineer is not None:
             self.logger.info("Applying mill-specific feature engineering")
             combined_df = X_processed.copy()
-            combined_df[primary_target_col] = y_processed
+            combined_df[target_col] = y_processed
             
-            df_engineered = self.feature_engineer.fit_transform(combined_df, primary_target_col)
+            df_engineered = self.feature_engineer.fit_transform(combined_df, target_col)
             
             # Separate features and target again
-            y_processed = df_engineered[primary_target_col].copy()
-            X_processed = df_engineered.drop(columns=[primary_target_col])
+            y_processed = df_engineered[target_col].copy()
+            X_processed = df_engineered.drop(columns=[target_col])
             
             self.logger.info(f"After feature engineering: {X_processed.shape[1]} features")
         
@@ -190,39 +185,76 @@ class IntegratedNoisyTrainer:
         """Apply feature selection to reduce dimensionality."""
         self.logger.info(f"Applying feature selection (method: {self.config.feature_selection_method})")
         
+        # Clean data before feature selection
+        X_clean = X.copy()
+        y_clean = y.copy()
+        
+        # Handle NaN values
+        if X_clean.isnull().any().any() or y_clean.isnull().any():
+            self.logger.info("Handling NaN values before feature selection")
+            
+            # Remove rows with NaN in target
+            valid_target_mask = ~y_clean.isnull()
+            X_clean = X_clean[valid_target_mask]
+            y_clean = y_clean[valid_target_mask]
+            
+            # Handle infinite values first
+            X_clean = X_clean.replace([np.inf, -np.inf], np.nan)
+            
+            # Fill NaN values in features more robustly
+            for col in X_clean.columns:
+                if X_clean[col].isnull().any():
+                    median_val = X_clean[col].median()
+                    if pd.isna(median_val):
+                        # If median is NaN (all values are NaN), use 0
+                        X_clean[col] = X_clean[col].fillna(0)
+                        self.logger.warning(f"Column {col} had all NaN values, filled with 0")
+                    else:
+                        X_clean[col] = X_clean[col].fillna(median_val)
+            
+            # Final check and cleanup - drop columns that are still problematic
+            problematic_cols = []
+            for col in X_clean.columns:
+                if X_clean[col].isnull().any() or X_clean[col].isna().any():
+                    problematic_cols.append(col)
+            
+            if problematic_cols:
+                self.logger.warning(f"Dropping {len(problematic_cols)} problematic columns: {problematic_cols}")
+                X_clean = X_clean.drop(columns=problematic_cols)
+        
         if self.config.feature_selection_method == 'importance':
             # Use RandomForest feature importance
             from sklearn.ensemble import RandomForestRegressor
             from sklearn.feature_selection import SelectFromModel
             
             rf = RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1)
-            rf.fit(X, y)
+            rf.fit(X_clean, y_clean)
             
             selector = SelectFromModel(rf, max_features=self.config.max_features)
-            X_selected = selector.fit_transform(X, y)
+            X_selected = selector.fit_transform(X_clean, y_clean)
             
-            selected_features = X.columns[selector.get_support()].tolist()
-            X_reduced = pd.DataFrame(X_selected, columns=selected_features, index=X.index)
+            selected_features = X_clean.columns[selector.get_support()].tolist()
+            X_reduced = pd.DataFrame(X_selected, columns=selected_features, index=X_clean.index)
             
         elif self.config.feature_selection_method == 'correlation':
             # Remove highly correlated features
-            correlation_matrix = X.corr().abs()
+            correlation_matrix = X_clean.corr().abs()
             upper_triangle = correlation_matrix.where(
                 np.triu(np.ones(correlation_matrix.shape), k=1).astype(bool)
             )
             
             to_drop = [column for column in upper_triangle.columns if any(upper_triangle[column] > 0.95)]
-            X_reduced = X.drop(columns=to_drop)
+            X_reduced = X_clean.drop(columns=to_drop)
             
             # Limit to max_features if still too many
             if len(X_reduced.columns) > self.config.max_features:
                 # Select by target correlation
-                target_corr = abs(X_reduced.corrwith(y))
+                target_corr = abs(X_reduced.corrwith(y_clean))
                 top_features = target_corr.nlargest(self.config.max_features).index
                 X_reduced = X_reduced[top_features]
         
         else:
-            X_reduced = X
+            X_reduced = X_clean
         
         self.logger.info(f"Feature selection: {X.shape[1]} -> {X_reduced.shape[1]} features")
         return X_reduced

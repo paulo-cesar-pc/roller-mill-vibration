@@ -198,6 +198,11 @@ def main():
         data_loader = DataLoader()
         df, quality_report = data_loader.load_and_process(testing_mode=True)
         
+        # Limit to 50k rows for faster testing
+        if len(df) > 50000:
+            logger.info(f"Limiting dataset from {len(df)} to 50,000 rows for testing")
+            df = df.head(50000)
+        
         target_col = config.data.target_column
         logger.info(f"Loaded dataset: {df.shape}")
         logger.info(f"Target column: {target_col}")

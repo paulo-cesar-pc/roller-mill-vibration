@@ -226,31 +226,43 @@ class MillFeatureEngineer:
     def create_multi_scale_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """Create features across multiple time scales."""
         df_multi = df.copy()
+        dataset_size = len(df)
+        
+        # Limit window sizes based on dataset size to prevent excessive computation
+        max_window = min(dataset_size // 4, 288)  # Cap at dataset_size/4 or 288, whichever is smaller
+        
+        # Filter window sizes to reasonable limits
+        short_windows = [w for w in self.config.short_windows if w <= max_window]
+        medium_windows = [w for w in self.config.medium_windows if w <= max_window]
+        long_windows = [w for w in self.config.long_windows if w <= max_window]
+        
+        self.logger.info(f"Multi-scale features - Dataset size: {dataset_size}, Max window: {max_window}")
         
         # Target vibration columns for multi-scale analysis
         vibration_cols = [col for col in df.columns if 'VIBRATION' in col and ('mean' in col or 'std' in col)]
+        self.logger.info(f"Found {len(vibration_cols)} vibration columns for multi-scale analysis")
         
-        for col in vibration_cols:
+        for col in vibration_cols[:3]:  # Limit to first 3 columns to reduce computational burden
             if col in df.columns:
                 base_name = col.replace('CM2_PV_VRM01_VIBRATION_', 'vib_')
                 
                 # Short-term patterns
-                for window in self.config.short_windows:
-                    df_multi[f'{base_name}_ma_{window}'] = df[col].rolling(window).mean()
-                    df_multi[f'{base_name}_std_{window}'] = df[col].rolling(window).std()
+                for window in short_windows:
+                    df_multi[f'{base_name}_ma_{window}'] = df[col].rolling(window, min_periods=1).mean()
+                    df_multi[f'{base_name}_std_{window}'] = df[col].rolling(window, min_periods=1).std()
                     
                 # Medium-term patterns
-                for window in self.config.medium_windows:
-                    df_multi[f'{base_name}_trend_{window}'] = df[col] - df[col].rolling(window).mean()
-                    df_multi[f'{base_name}_volatility_{window}'] = df[col].rolling(window).std()
+                for window in medium_windows[:2]:  # Limit to 2 medium windows
+                    df_multi[f'{base_name}_trend_{window}'] = df[col] - df[col].rolling(window, min_periods=1).mean()
+                    df_multi[f'{base_name}_volatility_{window}'] = df[col].rolling(window, min_periods=1).std()
                     
-                # Long-term baseline
-                for window in self.config.long_windows:
-                    if len(df) > window:
+                # Long-term baseline (only if dataset is large enough)
+                for window in long_windows[:1]:  # Limit to 1 long window
+                    if dataset_size > window * 2:
                         df_multi[f'{base_name}_baseline_{window}'] = df[col].rolling(window, min_periods=window//2).mean()
                         df_multi[f'{base_name}_deviation_{window}'] = df[col] - df_multi[f'{base_name}_baseline_{window}']
                         
-        self.logger.debug("Created multi-scale features")
+        self.logger.info("Created multi-scale features")
         return df_multi
     
     def create_operational_regime_features(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -319,14 +331,23 @@ class MillFeatureEngineer:
         
         # Remove any infinite or extremely large values
         df_features = df_features.replace([np.inf, -np.inf], np.nan)
-        df_features = df_features.fillna(method='ffill').fillna(method='bfill')
+        df_features = df_features.ffill().bfill()
         
         # Clip extreme values to reasonable ranges
         numeric_cols = df_features.select_dtypes(include=[np.number]).columns
-        for col in numeric_cols:
-            q01, q99 = df_features[col].quantile([0.01, 0.99])
-            if q99 > q01:  # Only clip if we have valid range
-                df_features[col] = df_features[col].clip(lower=q01, upper=q99)
+        self.logger.info(f"Clipping extreme values for {len(numeric_cols)} numeric columns")
+        
+        for i, col in enumerate(numeric_cols):
+            if i % 50 == 0:  # Log progress every 50 columns
+                self.logger.info(f"Processing column {i+1}/{len(numeric_cols)}: {col}")
+                
+            try:
+                q01, q99 = df_features[col].quantile([0.01, 0.99])
+                if q99 > q01 and not pd.isna(q01) and not pd.isna(q99):  # Only clip if we have valid range
+                    df_features[col] = df_features[col].clip(lower=q01, upper=q99)
+            except Exception as e:
+                self.logger.warning(f"Failed to clip column {col}: {e}")
+                continue
         
         self.fitted = True
         self.logger.info(f"Mill feature engineering complete: {df.shape[1]} -> {df_features.shape[1]} features")
