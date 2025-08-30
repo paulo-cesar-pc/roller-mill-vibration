@@ -1,0 +1,1 @@
+- Before proceeding, treat each addition as if you were creating a pull request (PR). Each PR should be single-purpose, impactful, solid, and relevant. Avoid mixing unrelated changes — make every contribution meaningful and focused.
