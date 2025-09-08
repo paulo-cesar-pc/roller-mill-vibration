@@ -1,0 +1,84 @@
+\changetocdepth {4}
+\babel@toc {brazil}{}\relax 
+\setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
+\setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
+\setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
+\setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
+\setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
+\setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
+\contentsline {chapter}{\chapternumberline {1}\MakeTextUppercase []{Introdução}}{14}{chapter.1}%
+\setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
+\contentsline {chapter}{\chapternumberline {2}\MakeTextUppercase []{FUNDAMENTAÇÃO TEÓRICA}}{15}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Composição química geral do cimento}{16}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Processo produtivo}{17}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Extração da matéria prima e pré-homogeneização}{18}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Moagem de cru}{20}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Torre de ciclones}{22}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Clínquer}{22}{subsection.2.2.4}%
+\contentsline {subsubsection}{\numberline {2.2.4.1}Compostos do Clínquer}{22}{subsubsection.2.2.4.1}%
+\contentsline {section}{\numberline {2.3}Principais fatores que influenciam a vibração}{23}{section.2.3}%
+\contentsline {section}{\numberline {2.4}OBJETIVOS E JUSTIFICATIVA DO TRABALHO}{24}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Objetivo geral}{24}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Objetivos específicos}{24}{subsection.2.4.2}%
+\contentsline {section}{\numberline {2.5}Citações bibliográficas}{25}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Inserindo figuras}{26}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Inserindo tabelas}{28}{section.2.7}%
+\contentsline {subsection}{\numberline {2.7.1}Exemplo de subseção}{28}{subsection.2.7.1}%
+\contentsline {subsection}{\numberline {2.7.2}Uso de siglas}{29}{subsection.2.7.2}%
+\setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
+\contentsline {chapter}{\chapternumberline {3}\MakeTextUppercase []{Metodologia}}{31}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Inteligência artificial}{31}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Regressão linear}{31}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Floresta aleatória}{33}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Etapas de Implementação de uma floresta aleatória}{33}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Hiperparâmetros}{34}{subsection.3.3.2}%
+\contentsline {section}{\numberline {3.4}Redes neurais}{34}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Long Short Term Memory (LSTM) Neural Network}{37}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Exemplo de alíneas}{37}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Usando fórmulas matemáticas}{38}{section.3.7}%
+\contentsline {section}{\numberline {3.8}Usando código-fonte}{40}{section.3.8}%
+\contentsline {section}{\numberline {3.9}Usando teoremas, proposições, etc}{40}{section.3.9}%
+\contentsline {section}{\numberline {3.10}Usando Questões}{41}{section.3.10}%
+\setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
+\contentsline {chapter}{\chapternumberline {4}\MakeTextUppercase []{Resultados}}{42}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Resultados do Experimento A}{42}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Resultados do Experimento B}{43}{section.4.2}%
+\setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
+\contentsline {chapter}{\chapternumberline {5}\MakeTextUppercase []{Conclusões e Trabalhos Futuros}}{45}{chapter.5}%
+\setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
+\contentsline {chapter}{\chapternumberline {6}\MakeTextUppercase []{Trabalhos Relacionados}}{46}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Vibration Energy Coupling Behavior of Rolling Mills under Double Disturbance Conditions \cite {vibration-energy-coupling-behavior}}{46}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Multi-scale reconstruction of rolling mill vibration signal based on fuzzy entropy clustering \cite {multi-scale-reconstruction}}{47}{section.6.2}%
+\setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
+\contentsline {chapter}{\MakeTextUppercase []{REFER\^ENCIAS}}{48}{section*.33}%
+\contentsline {chapter}{AP\^ENDICES}{51}{section*.33}%
+\renewcommand *{\cftappendixname }{AP\^ENDICE \space }
+\renewcommand *{\cftappendixname }{\bfseries AP\^ENDICE \space }
+\setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
+\setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
+\cftinsert {A}
+\contentsline {appendix}{\chapternumberline {A}\hspace {-8pt}\uppercase {EXEMPLO DE APÊNDICE}}{51}{appendix.A}%
+\setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
+\setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
+\cftinsert {A}
+\contentsline {appendix}{\chapternumberline {B}\hspace {-8pt}\uppercase {Questionário utilizado para...}}{52}{appendix.B}%
+\setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
+\setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
+\cftinsert {A}
+\contentsline {appendix}{\chapternumberline {C}\hspace {-8pt}\uppercase {Códigos-fontes utilizados para...}}{53}{appendix.C}%
+\setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
+\setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
+\cftinsert {A}
+\contentsline {appendix}{\chapternumberline {D}\hspace {-8pt}\uppercase {\textit {IEEE CEFC 2016}}}{54}{appendix.D}%
+\contentsline {chapter}{ANEXOS}{56}{appendix.D}%
+\cftinsert {AAA}
+\renewcommand *{\cftappendixname }{ANEXO \space }
+\renewcommand *{\cftappendixname }{\bfseries ANEXO \space }
+\setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
+\setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
+\cftinsert {A}
+\contentsline {appendix}{\chapternumberline {A}\hspace {-8pt}\uppercase {Exemplo de um anexo}}{56}{appendix.anexochapback.1}%
+\setlength {\cftchapterindent }{0em} \setlength {\cftchapternumwidth }{\cftlastnumwidth }
+\setlength {\cftchapterindent }{\cftlastnumwidth } \setlength {\cftchapternumwidth }{2em}
+\cftinsert {A}
+\contentsline {appendix}{\chapternumberline {B}\hspace {-8pt}\uppercase {Exemplo de um anexo em PDF}}{57}{appendix.anexochapback.2}%

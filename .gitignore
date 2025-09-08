@@ -7,6 +7,8 @@ __pycache__/
 data/
 full_data/
 
+catboos_info/
+
 # C extensions
 *.so
 
